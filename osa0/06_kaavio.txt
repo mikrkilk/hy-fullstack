@@ -1,0 +1,16 @@
+note over selain:
+Käyttäjä kirjoittaa lomakkeelle tekstiä
+ja painaa nappia
+end note
+
+note over selain:
+Selain päivittää listauksen lomakkeen viestillä
+end note
+
+
+selain->palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over palvelin:
+Palvelin päivittää oman taulukkonsa muistiinpanoista
+POST-pyynnön datalla
+end note

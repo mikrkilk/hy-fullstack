@@ -1,0 +1,22 @@
+note over selain:
+Käyttäjä kirjoittaa lomakkeelle tekstiä
+ja painaa nappia
+end note
+
+selain->palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note
+
+note over palvelin:
+Palvelin pyytaa POST-pyynnön datan
+req.body.note -kentästä
+Samalla palvelin luo uuden note-olion
+ja laittaa sen notes-taulukkoon
+end note
+
+palvelin -> selain: Redirect: https://fullstack-exampleapp.herokuapp.com/notes
+
+selain->palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+palvelin-->selain: HTML-koodi
+selain->palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+palvelin-->selain: main.css
+selain->palvelin: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+palvelin-->selain: main.js
