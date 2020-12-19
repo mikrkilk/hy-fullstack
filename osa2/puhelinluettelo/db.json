@@ -1,11 +1,6 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "12",
-      "id": 1
-    },
-    {
       "name": "Ada Lovelace",
       "number": "39-44-5323523",
       "id": 2
@@ -24,6 +19,16 @@
       "name": "Koira Kalervo",
       "number": "1231324",
       "id": 5
+    },
+    {
+      "name": "Kissa Matikainen",
+      "number": "12324242",
+      "id": 6
+    },
+    {
+      "name": "Kukka",
+      "number": "1323",
+      "id": 7
     }
   ]
 }

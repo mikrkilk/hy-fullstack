@@ -2,14 +2,17 @@ import React, { useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
+import Notification from './components/Notification';
 import Persons from './components/Persons';
 import entryService from './services/entries'
+import './index.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [error, setError] = useState({message:null,status:"note"})
 
   useEffect(() => {
     entryService.getAll()
@@ -23,20 +26,38 @@ const App = () => {
     const person = persons.find(({name}) => name===newName)
     if(!(person===undefined)) {
       if(window.confirm(newName+' is already in the phonebook! \n Update with a new number?')) {
+        console.log(person)
         entryService.update(person.id,{...person, number:newNumber})
         .then(response=>{
-          setPersons(persons.map(pers => pers.id !==person.id?pers:response))})
-        .catch(response=>console.log(response))
+          setPersons(persons.map(pers => pers.id !==person.id?pers:response))
+          setNewName('')
+          setNewNumber('')
+          setMessage({message:"Updated "+newName,status:'note'})
+        })
+        .catch(error=>setMessage({message:"Could not edit "+newName,status:'error'}))
       }
     }
     else {
       entryService.create({name: newName, number: newNumber})
-      .then(response => console.log("Success"))
-      .catch(error=>console.log(error))
-      setPersons(persons.concat({name: newName, number: newNumber}))
-      setNewName('')
-      setNewNumber('')
+      .then(response => {
+        setMessage({message:"Added "+newName,status:'note'})
+        // To get the ID for the new person. Not optimal
+        entryService.getAll()
+        .then(initEntries => {
+        setPersons(initEntries)
+        })
+        setNewName('')
+        setNewNumber('')
+      })
+      .catch(error=>setMessage({message:"Could not add "+newName,status:'error'}))
     }
+  }
+
+  const setMessage=(msg) =>{
+    setError(msg)
+    setTimeout(()=> {
+      setError({message:null,status:"note"})
+    }, 5000)
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
@@ -48,16 +69,17 @@ const App = () => {
   const removeEntry = (id) => {
     entryService.remove(id)
     .then(response=>{
-      console.log(response)
+      setMessage({message:"Entry removed successfully",status:'note'})
       setPersons(persons.filter(person=>person.id!==id))
     })
-    .catch(error => console.log(error))
+    .catch(error=>setMessage({message:error,status:'error'}))
   }
   
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={error.message} status={error.status} />
 
       <Filter filt={filter} chg={updateFilter}/>
 
