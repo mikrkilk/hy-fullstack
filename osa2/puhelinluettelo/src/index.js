@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
-import axios from 'axios';
+import entryService from './services/entries'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -12,21 +12,27 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
+    entryService.getAll()
+      .then(initEntries => {
+        setPersons(initEntries)
       })
   }, [])
 
   const addEntry = (event) => {
     event.preventDefault()
-    if(persons.some(person => person.name === newName)) {
-      alert(newName+' is already in the phonebook!')
+    const person = persons.find(({name}) => name===newName)
+    if(!(person===undefined)) {
+      if(window.confirm(newName+' is already in the phonebook! \n Update with a new number?')) {
+        entryService.update(person.id,{...person, number:newNumber})
+        .then(response=>{
+          setPersons(persons.map(pers => pers.id !==person.id?pers:response))})
+        .catch(response=>console.log(response))
+      }
     }
     else {
+      entryService.create({name: newName, number: newNumber})
+      .then(response => console.log("Success"))
+      .catch(error=>console.log(error))
       setPersons(persons.concat({name: newName, number: newNumber}))
       setNewName('')
       setNewNumber('')
@@ -38,6 +44,15 @@ const App = () => {
   const handleNumberChange = (event) => setNewNumber(event.target.value)
   
   const updateFilter = (event) => setFilter(event.target.value)
+
+  const removeEntry = (id) => {
+    entryService.remove(id)
+    .then(response=>{
+      console.log(response)
+      setPersons(persons.filter(person=>person.id!==id))
+    })
+    .catch(error => console.log(error))
+  }
   
 
   return (
@@ -53,7 +68,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons content={persons.filter(person=>person.name.toLowerCase().includes(filter.toLowerCase()))} />
+      <Persons content={persons.filter(person=>person.name.toLowerCase().includes(filter.toLowerCase()))} onPush={removeEntry} />
     </div>
   )
 }
