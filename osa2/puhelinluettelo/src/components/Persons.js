@@ -1,10 +1,10 @@
 import React from 'react'
 
-const Persons = ({content, onPush}) => {
+const Persons = ({content, onPush, filter}) => {
   return (
       <div>
         <ul>
-            {content.map(person => <Person name={person.name} number={person.number} key={person.name} onPush={()=>onPush(person.id)}/>)}
+            {content.map(person => person.name.toLowerCase().includes(filter.toLowerCase())?<Person name={person.name} number={person.number} key={person.name} onPush={()=>onPush(person.id)}/>:'')}
         </ul>
     </div>
   )

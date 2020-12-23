@@ -90,7 +90,7 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons content={persons.filter(person=>person.name.toLowerCase().includes(filter.toLowerCase()))} onPush={removeEntry} />
+      <Persons content={persons} onPush={removeEntry} filter={filter} />
     </div>
   )
 }
