@@ -34,7 +34,7 @@ const App = () => {
           setNewNumber('')
           setMessage({message:"Updated "+newName,status:'note'})
         })
-        .catch(error=>setMessage({message:"Could not edit "+newName,status:'error'}))
+        .catch(error=>setMessage({message:"Could not edit "+newName+": "+error.response.data.error,status:'error'}))
       }
     }
     else {
@@ -49,7 +49,7 @@ const App = () => {
         setNewName('')
         setNewNumber('')
       })
-      .catch(error=>setMessage({message:"Could not add "+newName,status:'error'}))
+      .catch(error=>setMessage({message:"Could not add "+newName+": "+error.response.data.error,status:'error'}))
     }
   }
 
